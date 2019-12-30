@@ -108,7 +108,6 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
           onChange={this._handleChange}
           isMonthPickerVisible={false}
           timeDisplayControlType={TimeDisplayControlType.Dropdown}
-        // onSelectDate={this._onSelectDate}
         />
         <DialogFooter>
           <DefaultButton text="Cancel" onClick={this._onCancel} />
