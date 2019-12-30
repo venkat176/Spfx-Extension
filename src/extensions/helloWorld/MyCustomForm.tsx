@@ -70,9 +70,12 @@ private _context =WebPartContext;
             firstDayOfWeek: DayOfWeek.Monday,
             addUsers: [],
             saving: false,
-            date:null,
-            issuestatus:[],
-            title:""
+            title:"",
+            dpvalue:"",
+            dropvalue:"",
+            dudate:new Date(),
+            // issuestatus:[],
+            date:new Date()
         };
     }
 
@@ -86,7 +89,7 @@ private _context =WebPartContext;
                 <h2>New Item</h2>
                 
                 <Label htmlFor="title" required>Title</Label>
-                <TextField id="title" ariaLabel="text field" onChange={this.issueName} />
+                <TextField id="title" ariaLabel="text field" />
                 <Label htmlFor="assignedto">Assigned To</Label>
                 <PeoplePicker
                     context={this.context}

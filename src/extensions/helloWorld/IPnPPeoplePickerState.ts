@@ -12,6 +12,7 @@ export interface IPnPPeoplePickerState {
     title:string;
     dpvalue:string;
     dropvalue:string;
+    dudate:Date,
     // duedate: Date;
     // ID: string;
     // Title: string;

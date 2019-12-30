@@ -20,6 +20,7 @@ import { autobind, assign } from '@uifabric/utilities';
 import { IPnPPeoplePickerState } from './IPnPPeoplePickerState';
 import { ExtensionContext } from '@microsoft/sp-extension-base';
 import * as pnp from 'sp-pnp-js';
+
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
  * it will be deserialized into the BaseExtension.properties object.
@@ -67,6 +68,7 @@ export default class HelloWorldCommandSet extends BaseListViewCommandSet<IHelloW
     // sp.setup({
     //   spfxContext: this.context
     // });    
+
     this.panelPlaceHolder = document.body.appendChild(document.createElement("div"));
 
     return Promise.resolve();
