@@ -8,7 +8,8 @@ import { TextField } from 'office-ui-fabric-react/lib/TextField';
 //import MycustomForm from "./MyCustomForm";
 import { DialogFooter } from "office-ui-fabric-react";
 import { Label } from 'office-ui-fabric-react/lib/Label';
-// import { sp } from '@pnp/sp';
+import { sp } from '@pnp/sp';
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 // import pnp, { sp, Item, ItemAddResult, ItemUpdateResult,Web } from "sp-pnp-js";
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { autobind } from 'office-ui-fabric-react';
@@ -60,7 +61,7 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
         <Label htmlFor="title" required>Title</Label>
         <TextField id="title" value={this.state.title} ariaLabel="text field" onChange={this.testField} />
         <Label htmlFor="assignedto">Assigned To</Label>
-        {/* <PeoplePicker
+        <PeoplePicker
           context={this.props.context}
           titleText="People Picker"
           personSelectionLimit={3}
@@ -72,7 +73,7 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
           selectedItems={this._getPeoplePickerItems}
           showHiddenInUI={false}
           principalTypes={[PrincipalType.User]}
-          resolveDelay={1000} /> */}
+          resolveDelay={1000} />
         <Label htmlFor="issuestatus">Issue Status</Label>
         <Dropdown
           id="issuestatus"
