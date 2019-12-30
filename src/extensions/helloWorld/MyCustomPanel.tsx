@@ -167,15 +167,3 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
   };
 
 }
-// function _alertClicked(): void {
-//   //alert('Clicked');
-//   let priority = issuestatus;
-//   pnp.sp.web.lists.getByTitle('issueTest').items.add({
-//     Title: this.state.title,
-//     // AssignedTo : document.getElementById('assignedto')["value"],   
-//     Status: this.state.dpvalue,
-//     Priority: this.state.dropvalue,
-//     // DueDate: document.getElementById('duedate')["value"]
-//   });
-//   alert("Record with Profile Name : " + document.getElementById('title')["value"] + " Added !");
-// }

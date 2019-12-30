@@ -13,10 +13,4 @@ export interface IPnPPeoplePickerState {
     dpvalue:string;
     dropvalue:string;
     dudate:Date,
-    // duedate: Date;
-    // ID: string;
-    // Title: string;
-    // Status: string;
-    // Priority:string;
-    // DueDate: Date;
 }  

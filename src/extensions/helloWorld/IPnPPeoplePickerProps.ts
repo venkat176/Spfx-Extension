@@ -11,9 +11,4 @@ export interface IPnPPeoplePickerProps {
   isOpen: boolean;	    
   currentTitle: string;	 
   maxNrOfUsers:number;   
-  // itemId: number;	    
-  // listId: string;
-  // siteUrl: WebPartContext;
-  // siteUrl: string;
-  // title:string;
 }  
