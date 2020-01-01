@@ -20,25 +20,24 @@ import { autobind, assign } from '@uifabric/utilities';
 import { IPnPPeoplePickerState } from './IPnPPeoplePickerState';
 import { ExtensionContext } from '@microsoft/sp-extension-base';
 import * as pnp from 'sp-pnp-js';
-
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
  * it will be deserialized into the BaseExtension.properties object.
  * You can define an interface to describe it.
  */
-
 export interface IHelloWorldCommandSetProperties {
   // This is an example; replace with your own properties
   description: string;
   context: WebPartContext;
   sampleTextOne: string;
   sampleTextTwo: string;
+
 }
 
 const LOG_SOURCE: string = 'HelloWorldCommandSet';
 
 export default class HelloWorldCommandSet extends BaseListViewCommandSet<IHelloWorldCommandSetProperties> {
-
+public url;
   //  protected readonly domElement: HTMLElement;
 
   // public render(): void {
@@ -60,23 +59,40 @@ export default class HelloWorldCommandSet extends BaseListViewCommandSet<IHelloW
     Log.info(LOG_SOURCE, 'Initialized HelloWorldCommandSet');
 
     console.log(this.context.pageContext.web.absoluteUrl);
-
-    pnp.setup({
-      spfxContext: this.context
+    // this.properties.cnt = this.context.pageContext.web.absoluteUrl;
+    this.url =  this.context.pageContext.web.absoluteUrl;
+    return super.onInit().then(_ => {
+      sp.setup({
+        spfxContext: this.context
+      });
+      this.panelPlaceHolder = document.body.appendChild(document.createElement("div"));
+      
     });
+
+    // pnp.setup({
+    //   spfxContext: this.context
+    // });
 
     // sp.setup({
     //   spfxContext: this.context
     // });    
+    
 
-    this.panelPlaceHolder = document.body.appendChild(document.createElement("div"));
-
-    return Promise.resolve();
+   // return Promise.resolve();
+  
   }
+
+  // public render(): void {
+  //   const element: React.ReactElement < IPnPPeoplePickerProps > = React.createElement(
+  //     MyCustomPanel,
+  //     {
+  //       siteUrl: this.context.pageContext.web.absoluteUrl,
+  //     }
+  // }
 
   private _showPanel(itemId: number, currentTitle: string) {
     this._renderPanelComponent({
-      isOpen: true, currentTitle, itemId, listId: this.context.pageContext.list.id.toString(), onClose: this._dismissPanel
+      isOpen: true, currentTitle, itemId, listId: this.context.pageContext.list.id.toString(), context:this.context, onClose: this._dismissPanel
     });
   }
   @autobind private _dismissPanel() {
@@ -84,7 +100,7 @@ export default class HelloWorldCommandSet extends BaseListViewCommandSet<IHelloW
   }
   private _renderPanelComponent(props: any) {
     const element: React.ReactElement<IPnPPeoplePickerProps> = React.createElement(MyCustomPanel, assign({
-      onClose: null, currentTitle: null, itemId: null, isOpen: false, listId: null
+      onClose: null, currentTitle: null, itemId: null, isOpen: false, listId: null , context : this.properties.context
     }, props));
     ReactDOM.render(element, this.panelPlaceHolder);
   }
@@ -95,6 +111,7 @@ export default class HelloWorldCommandSet extends BaseListViewCommandSet<IHelloW
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible = event.selectedRows.length === 1;
+      console.log(this.context.pageContext.web);
     }
   }
 

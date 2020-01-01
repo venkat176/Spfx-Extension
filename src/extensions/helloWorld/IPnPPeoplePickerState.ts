@@ -2,7 +2,7 @@ import { DayOfWeek } from 'office-ui-fabric-react/lib/DatePicker';
 import { IDropdownOption } from 'office-ui-fabric-react';
 
 export interface IPnPPeoplePickerState {  
-    addUsers: any[];  
+    addUsers: string[];  
     selectedItem?: IDropdownOption;
     selectedITem?: IDropdownOption;
     firstDayOfWeek?: DayOfWeek;

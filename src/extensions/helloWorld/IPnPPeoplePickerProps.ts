@@ -11,4 +11,5 @@ export interface IPnPPeoplePickerProps {
   isOpen: boolean;	    
   currentTitle: string;	 
   maxNrOfUsers:number;   
+  cnt : any;
 }  

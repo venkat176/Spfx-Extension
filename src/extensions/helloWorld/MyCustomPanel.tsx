@@ -15,16 +15,18 @@ import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { autobind } from 'office-ui-fabric-react';
 import { getGUID } from "@pnp/common";
 import { Dropdown, DropdownMenuItemType, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
-import { DatePicker, DayOfWeek, IDatePickerStrings } from 'office-ui-fabric-react/lib/DatePicker';
+import { DatePicker, DayOfWeek } from 'office-ui-fabric-react/lib/DatePicker';
 import { PrimaryButton } from 'office-ui-fabric-react';
 import * as pnp from 'sp-pnp-js';
 import { IPnPPeoplePickerProps } from './IPnPPeoplePickerProps';
 import { IPnPPeoplePickerState } from './IPnPPeoplePickerState';
 import { DateTimePicker, DateConvention, TimeConvention, TimeDisplayControlType } from '@pnp/spfx-controls-react/lib/dateTimePicker';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
-
+let thisduplicate;
+let addUsers;
+let peoplePickerItem = this;
 export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps, IPnPPeoplePickerState> {
-  private _context = WebPartContext;
+  thisduplicate = this;
   //   public render(): void {
   //     ReactDOM.render(<Panel
   //       isLightDismiss={ true }
@@ -38,6 +40,7 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
   //           <Label htmlFor="assignedto">Assigned To</Label>
   //     </Panel>, this.domElement);
   //   } 
+
   private title: string = null;
   constructor(props: IPnPPeoplePickerProps, _state: IPnPPeoplePickerState) {
     super(props);
@@ -60,19 +63,21 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
         <h2>New Item</h2>
         <Label htmlFor="title" required>Title</Label>
         <TextField id="title" value={this.state.title} ariaLabel="text field" onChange={this.testField} />
-        <Label htmlFor="assignedto">Assigned To</Label>
+        {/* <Label htmlFor="assignedto">Assigned To</Label> */}
         <PeoplePicker
-          context={this.props.context}
-          titleText="People Picker"
-          personSelectionLimit={3}
+          context={context}
+          titleText="Assigned To"
+          personSelectionLimit={1}
+          
           groupName={""} // Leave this blank in case you want to filter from all users    
-          showtooltip={true}
-          isRequired={true}
-          disabled={false}  
+          // showtooltip={true}
+          // isRequired={true}
+          disabled={false}
           ensureUser={true}
-          selectedItems={this._getPeoplePickerItems}
+          selectedItems={this._getPeoplePickerItems.bind(this)}
           showHiddenInUI={false}
           principalTypes={[PrincipalType.User]}
+          // defaultSelectedUsers={this.state.addUsers}
           resolveDelay={1000} />
         <Label htmlFor="issuestatus">Issue Status</Label>
         <Dropdown
@@ -111,7 +116,7 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
         />
         <DialogFooter>
           <DefaultButton text="Cancel" onClick={this._onCancel} />
-          <PrimaryButton text="save" onClick={this._onsave} />
+          <PrimaryButton text="save" onClick={this._onSave} />
         </DialogFooter>
       </Panel>);
   }
@@ -120,10 +125,13 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
     this.props.onClose();
   }
 
-  @autobind private _onsave() {
+  @autobind private _onSave() {
+    var ppickerId = this.state.addUsers[0]["id"];
     pnp.sp.web.lists.getByTitle('issueTest').items.add({
       Title: this.state.title,
-      // AssignedTo : document.getElementById('assignedto')["value"],   
+      AssignedTo: {
+        results: this.state.addUsers
+      },
       Status: this.state.dpvalue,
       Priority: this.state.dropvalue,
       DueDate: this.state.dudate,
@@ -135,11 +143,19 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
   };
   private _getPeoplePickerItems(items: any[]) {
     console.log('Items:', items);
-    this.setState({ addUsers: items });
+    peoplePickerItem.setState({ addUsers:items});
+    // var peoplepicarray = [];  
+    // for (let i = 0; i < this.state.addUsers.length; i++) {  
+    //   peoplepicarray.push(this.state.addUsers[i]["id"]);  
+    // } 
+    // this.setState({ addUsers: peoplepicarray });
   }
-  private testField = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, issueF?: string): void => {
+  // private async _getPeoplePickerItems(items: any[]) {
+  //   await this.setState({ addUsers: items[0].text });
+  //  console.log(this.state.addUsers);
+  // }
+  private testField = (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, issueF?: string): void => {
     this.setState({ title: issueF });
-
   }
   private _onFormatDate = (date: Date): string => {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + (date.getFullYear() % 100);
