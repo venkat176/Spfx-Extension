@@ -9,6 +9,7 @@ import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { DialogFooter } from "office-ui-fabric-react";
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import { sp } from '@pnp/sp';
+import { IPersonaProps, Persona } from 'office-ui-fabric-react/lib/Persona';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 // import pnp, { sp, Item, ItemAddResult, ItemUpdateResult,Web } from "sp-pnp-js";
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
@@ -25,6 +26,9 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 let thisduplicate;
 let addUsers;
 let peoplePickerItem = this;
+let getdocId;
+let getselctedId;
+let getselctedURL;
 export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps, IPnPPeoplePickerState> {
   thisduplicate = this;
   //   public render(): void {
@@ -40,36 +44,37 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
   //           <Label htmlFor="assignedto">Assigned To</Label>
   //     </Panel>, this.domElement);
   //   } 
-
-  private title: string = null;
   constructor(props: IPnPPeoplePickerProps, _state: IPnPPeoplePickerState) {
     super(props);
     this.state = {
       firstDayOfWeek: DayOfWeek.Monday,
       addUsers: [],
       saving: false,
-      date: undefined,
       title: "",
       dpvalue: "",
       dropvalue: "",
       dudate: new Date(),
+
     };
   }
 
   public render(): React.ReactElement<IPnPPeoplePickerProps> {
-    let { isOpen, context } = this.props;
+    let { isOpen, context,docIds } = this.props;
+    getdocId = this.props.docIds;
+    // console.log(getdocId);
+    this._getItem();
+    // this._getlistItem();
     return (
       <Panel isOpen={isOpen} type={PanelType.medium}>
         <h2>New Item</h2>
         <Label htmlFor="title" required>Title</Label>
-        <TextField id="title" value={this.state.title} ariaLabel="text field" onChange={this.testField} />
+        <TextField id="title" placeholder="enter title" value={this.state.title} ariaLabel="text field" onChange={this.testField} />
         {/* <Label htmlFor="assignedto">Assigned To</Label> */}
         <PeoplePicker
           context={context}
           titleText="Assigned To"
-          personSelectionLimit={1}
-          
-          groupName={""} // Leave this blank in case you want to filter from all users    
+          personSelectionLimit={3}
+          groupName={""} //Leave this blank in case you want to filter from all users    
           // showtooltip={true}
           // isRequired={true}
           disabled={false}
@@ -119,39 +124,29 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
           <PrimaryButton text="save" onClick={this._onSave} />
         </DialogFooter>
       </Panel>);
+
   }
 
   @autobind private _onCancel() {
     this.props.onClose();
   }
 
-  @autobind private _onSave() {
-    var ppickerId = this.state.addUsers[0]["id"];
-    pnp.sp.web.lists.getByTitle('issueTest').items.add({
-      Title: this.state.title,
-      AssignedTo: {
-        results: this.state.addUsers
-      },
-      Status: this.state.dpvalue,
-      Priority: this.state.dropvalue,
-      DueDate: this.state.dudate,
-    });
-    alert("Record with Profile Name : " + document.getElementById('title')["value"] + " Added !");
-  }
   private _handleChange = (date: Date | null | undefined): void => {
     this.setState({ dudate: date });
   };
-  private _getPeoplePickerItems(items: any[]) {
+
+  private _getPeoplePickerItems = (items: string[]): void => {
     console.log('Items:', items);
-    peoplePickerItem.setState({ addUsers:items});
-    // var peoplepicarray = [];  
-    // for (let i = 0; i < this.state.addUsers.length; i++) {  
-    //   peoplepicarray.push(this.state.addUsers[i]["id"]);  
-    // } 
-    // this.setState({ addUsers: peoplepicarray });
+    this.setState({ addUsers: items });
   }
+  // { this.setState({ selectedItems: items }); } 
+  // var peoplepicarray = [];  
+  // for (let i = 0; i < this.state.addUsers.length; i++) {  
+  //   peoplepicarray.push(this.state.addUsers[i]["id"]);  
+  // } 
+  // this.setState({ addUsers: peoplepicarray });
   // private async _getPeoplePickerItems(items: any[]) {
-  //   await this.setState({ addUsers: items[0].text });
+  //   await this.setState({ addUsers:items[0].text });
   //  console.log(this.state.addUsers);
   // }
   private testField = (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, issueF?: string): void => {
@@ -171,14 +166,51 @@ export default class MyCustomPanel extends React.Component<IPnPPeoplePickerProps
     }
     return new Date(year, month, day);
   };
+
   private _onChange = (_event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
+    // console.log(item);
     console.log(`Selection change: ${item.text} ${item.selected ? 'selected' : 'unselected'}`);
     this.setState({ dpvalue: item.text });
-
   };
+
   private onchange = (_event: React.FormEvent<HTMLDivElement>, Item: IDropdownOption): void => {
     console.log(`Selection change: ${Item.text} ${Item.selected ? 'selected' : 'unselected'}`);
     this.setState({ dropvalue: Item.text });
   };
 
+  private _getItem() {
+    // console.log(getdocId);
+    pnp.sp.web.lists.getByTitle("spfxDocument").items.getById(getdocId).get().then((items) => {
+      
+      getselctedId = items.Id;
+      getselctedURL = items.ServerRedirectedEmbedUrl;
+
+     console.log(items);
+      // console.log(getselctedURL);
+    });
+  }
+  // private _getlistItem() {
+  //   // console.log(getdocId);
+  //   pnp.sp.web.lists.getByTitle("issueTest").items.get().then((items) => {
+  //       console.log(items);
+  //   });
+  // }
+  @autobind private _onSave() {
+    console.log(this.state.addUsers);
+    var ppicker = this.state.addUsers[0]["id"];
+    // var pp = parseInt(ppicker);
+    pnp.sp.web.lists.getByTitle('issueTest').items.add({
+      Title: this.state.title,
+      AssignedToId: {
+        results: [ppicker] 
+      },
+      Status: this.state.dpvalue,
+      Priority: this.state.dropvalue,
+      DueDate: this.state.dudate,
+      selectedDocID: getselctedId,
+      DocumentUrl: getselctedURL,
+    });
+    alert("Record with Profile Name : " + document.getElementById('title')["value"] + " Added !");
+    this.props.onClose();
+  }
 }

@@ -8,9 +8,8 @@ export interface IPnPPeoplePickerState {
     firstDayOfWeek?: DayOfWeek;
     value?: Date | null;
     saving: boolean;
-    date:Date;
     title:string;
     dpvalue:string;
     dropvalue:string;
-    dudate:Date,
+    dudate:Date;
 }  

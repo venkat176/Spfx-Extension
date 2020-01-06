@@ -75,7 +75,7 @@ private _context =WebPartContext;
             dropvalue:"",
             dudate:new Date(),
             // issuestatus:[],
-            date:new Date()
+            // date:new Date()
         };
     }
 
@@ -219,3 +219,35 @@ function _alertClicked(): void {
     });
     alert("Record with Profile Name : " + document.getElementById('title')["value"] + " Added !");
 }
+
+
+// get ID of documents
+// let web: Web = new Web(_context.pageContext.web.absoluteUrl);
+// // change the path as per your requirement
+// web.getFolderByServerRelativeUrl("/sites/dev/Shared%20Documents/test/").
+// files.add(file.name, file, true).then(f => {
+
+//     console.log("FileUpload success");
+
+//     f.file.getItem().then(item => {    
+//         console.log(item.ID);
+//     });
+// });
+
+// Basic use for Get
+// import pnp from "sp-pnp-js";
+
+// // get all the items from a list
+// pnp.sp.web.lists.getByTitle("My List").items.get().then((items: any[]) => {
+//     console.log(items);
+// });
+
+// // get a specific item by id
+// pnp.sp.web.lists.getByTitle("My List").items.getById(1).get().then((item: any) => {
+//     console.log(item);
+// });
+
+// // use odata operators for more efficient queries
+// pnp.sp.web.lists.getByTitle("My List").items.select("Title", "Description").top(5).orderBy("Modified", true).get().then((items: any[]) => {
+//     console.log(items);
+// });

@@ -2,10 +2,20 @@
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
     <CustomAction
         Title="HelloWorld"
-        RegistrationId="100"
+        RegistrationId="101"
         RegistrationType="List"
         Location="ClientSideExtension.ListViewCommandSet.CommandBar"
         ClientSideComponentId="aea74ebf-7229-427b-ab3c-dc8f62ea08cb"
         ClientSideComponentProperties="{&quot;sampleTextOne&quot;:&quot;One item is selected in the list.&quot;, &quot;sampleTextTwo&quot;:&quot;This command is always visible.&quot;}">
     </CustomAction>
+
+    <!-- <CustomAction 
+        Title="SPFxListViewCommandSet"
+        RegistrationId="101"
+        RegistrationType="List"
+        Location="ClientSideExtension.ListViewCommandSet.CommandBar"
+        ClientSideComponentId="5fc73e12-8085-4a4b-8743-f6d02ffe1240"
+        ClientSideComponentProperties="{&quot;sampleTextOne&quot;:&quot;One item is selected in the list.&quot;, &quot;sampleTextTwo&quot;:&quot;This command is always visible.&quot;}">
+    </CustomAction> -->
+
 </Elements>

@@ -31,15 +31,20 @@ export interface IHelloWorldCommandSetProperties {
   context: WebPartContext;
   sampleTextOne: string;
   sampleTextTwo: string;
-
+  docIds: number;
+  llistItemId: number;
+  dialogMess: string;
 }
 
 const LOG_SOURCE: string = 'HelloWorldCommandSet';
-
+let listItemId;
+// let selectedId;
+let listItem;
+let dcId;
+// let chId;
 export default class HelloWorldCommandSet extends BaseListViewCommandSet<IHelloWorldCommandSetProperties> {
-public url;
-  //  protected readonly domElement: HTMLElement;
-
+  public url;
+  // protected readonly domElement: HTMLElement;
   // public render(): void {
   //   const element: React.ReactElement<IPnPPeoplePickerProps> = React.createElement(
   //     MycustomForm,
@@ -50,38 +55,29 @@ public url;
   //   );
   //   ReactDOM.render(element, this.domElement);
   // }
-
   private panelPlaceHolder: HTMLDivElement = null;
   domElement: Element;
-
   @override
   public onInit(): Promise<void> {
     Log.info(LOG_SOURCE, 'Initialized HelloWorldCommandSet');
-
-    console.log(this.context.pageContext.web.absoluteUrl);
+    this._getlistItem();
+    // console.log(this.context.pageContext.web.absoluteUrl);
     // this.properties.cnt = this.context.pageContext.web.absoluteUrl;
-    this.url =  this.context.pageContext.web.absoluteUrl;
+    // this.url =  this.context.pageContext.web.absoluteUrl;
     return super.onInit().then(_ => {
       sp.setup({
         spfxContext: this.context
       });
       this.panelPlaceHolder = document.body.appendChild(document.createElement("div"));
-      
     });
-
-    // pnp.setup({
-    //   spfxContext: this.context
-    // });
-
-    // sp.setup({
-    //   spfxContext: this.context
-    // });    
-    
-
-   // return Promise.resolve();
-  
   }
-
+  // pnp.setup({
+  //   spfxContext: this.context
+  // });
+  // sp.setup({
+  //   spfxContext: this.context
+  // });     
+  // return Promise.resolve();
   // public render(): void {
   //   const element: React.ReactElement < IPnPPeoplePickerProps > = React.createElement(
   //     MyCustomPanel,
@@ -89,10 +85,23 @@ public url;
   //       siteUrl: this.context.pageContext.web.absoluteUrl,
   //     }
   // }
-
+  private _getlistItem() {
+    // console.log(getdocId);
+    pnp.sp.web.lists.getByTitle("issueTest").items.get().then((docItems) => {
+      // console.log(docItems);
+      listItem = docItems;
+      // for (var i = 0; i < docItems.length; i++) {
+      //   selectedId = docItems[i]['selectedDocID'];
+      //   console.log(selectedId);
+      // }
+    });
+  }
+  private _checkId(chId) {
+    return chId == listItemId;
+  }
   private _showPanel(itemId: number, currentTitle: string) {
     this._renderPanelComponent({
-      isOpen: true, currentTitle, itemId, listId: this.context.pageContext.list.id.toString(), context:this.context, onClose: this._dismissPanel
+      isOpen: true, currentTitle, itemId, listId: this.context.pageContext.list.id.toString(), context: this.context, onClose: this._dismissPanel, docIds: listItemId,
     });
   }
   @autobind private _dismissPanel() {
@@ -100,7 +109,7 @@ public url;
   }
   private _renderPanelComponent(props: any) {
     const element: React.ReactElement<IPnPPeoplePickerProps> = React.createElement(MyCustomPanel, assign({
-      onClose: null, currentTitle: null, itemId: null, isOpen: false, listId: null , context : this.properties.context
+      onClose: null, currentTitle: null, itemId: null, isOpen: false, listId: null, context: this.properties.context, docIds: this.properties.docIds
     }, props));
     ReactDOM.render(element, this.panelPlaceHolder);
   }
@@ -111,7 +120,6 @@ public url;
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible = event.selectedRows.length === 1;
-      console.log(this.context.pageContext.web);
     }
   }
 
@@ -122,9 +130,25 @@ public url;
         // const dialog: MyCustomPanel = new MyCustomPanel();
         // dialog.show();
         let selectedItem = event.selectedRows[0];
-        const listItemId = selectedItem.getValueByName('ID') as number;
+        listItemId = selectedItem.getValueByName('ID') as number;
+        // let listItemIndex = selectedItem.getValueByName('ID') as number;
         const title = selectedItem.getValueByName("Title");
-        this._showPanel(listItemId, title);
+        // console.log(listItem);
+        // let selectedId = listItem[0]['selectedDocID'];
+        dcId = [];
+        console.log(dcId);
+        for (var i = 0; i < listItem.length; i++) {
+          let selectedId = listItem[i]['selectedDocID'];
+          dcId.push(selectedId);
+        }
+        // console.log(listItemId);
+        // console.log(selectedId);
+        if (listItemId == dcId.filter(this._checkId)) {
+          Dialog.alert('Insidence already created for this document');
+          // alert('Insidence already created for this item');
+        } else {
+          this._showPanel(listItemId, title);
+        }
         break;
       case 'COMMAND_2':
         Dialog.alert(`${this.properties.sampleTextTwo}`);

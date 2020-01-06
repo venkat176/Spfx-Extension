@@ -12,4 +12,5 @@ export interface IPnPPeoplePickerProps {
   currentTitle: string;	 
   maxNrOfUsers:number;   
   cnt : any;
+  docIds: number;
 }  
